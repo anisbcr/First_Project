@@ -53,17 +53,21 @@ const StoreContextProvider = (props) => {
     );
     setCartItems(response.data.cartData);
   };
-  useEffect(() => {
-    async function loadData() {
-      await fetchFoodList();
-      if (localStorage.getItem("token")) {
-        setToken(localStorage.getItem("token"));
-        await loadCartData(localStorage.getItem("token"));
-      }
-    }
+useEffect(() => {
+  async function loadData() {
+    // Charger la liste des aliments
+    await fetchFoodList();
 
-    loadData();
-  }, []);
+    // Vérifier et définir le token
+    const token = localStorage.getItem("token");
+    if (token) {
+      setToken(token);  // Mettre à jour l'état du token
+      await loadCartData(token);  // Charger les données du panier avec le token
+    }
+  }
+  loadData();  // Appeler la fonction asynchrone
+}, [setToken]);  // Exécuter l'effet au démarrage ou à chaque changement de `setToken`
+
   const contextValue = {
     food_list,
     cartItems,
